@@ -2,6 +2,7 @@ package fr.tommarx.hpgj2017;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.Contact;
 
@@ -13,7 +14,6 @@ import fr.tommarx.gameengine.Components.Transform;
 import fr.tommarx.gameengine.Game.AbstractGameObject;
 import fr.tommarx.gameengine.Game.Game;
 import fr.tommarx.gameengine.Util.Keys;
-import fr.tommarx.gameengine.Util.Touch;
 
 public class Player extends AbstractGameObject {
 
@@ -51,6 +51,7 @@ public class Player extends AbstractGameObject {
             Vector2 a = new Vector2(body.getBody().getPosition().sub(getClosestPlanet().body.getBody().getPosition())).rotate(-90).nor().scl(SPEED);
             body.getBody().applyForceToCenter(a, false);
         }
+        handleCamera();
     }
 
     private Planet getClosestPlanet() {
@@ -63,6 +64,13 @@ public class Player extends AbstractGameObject {
             }
         }
         return p;
+    }
+
+    private void handleCamera() {
+        Vector2 posA = new Vector2(Game.getCurrentScreen().camera.position.cpy().x, Game.getCurrentScreen().camera.position.cpy().y);
+        Vector2 posB = new Vector2(body.getBody().getPosition());
+        Vector2 vec = posB.sub(posA);
+        Game.getCurrentScreen().camera.position.add(new Vector3(vec.scl(0.1f).x, vec.scl(0.1f).y, 0));
     }
 
 }

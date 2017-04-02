@@ -17,7 +17,7 @@ public class GameScreen extends Screen {
     public void show() {
         world.setGravity(new Vector2(0, 0));
         Game.debugging = true;
-        camera.zoom = 3f;
+        //camera.zoom = 3f;
         player = new Player(new Transform(Game.center));
         add(player);
         add(new Planet(new Transform(new Vector2(2, 5)), 1));
@@ -28,7 +28,7 @@ public class GameScreen extends Screen {
         add(new Planet(new Transform(new Vector2(10, 8)), 2.1f));
         add(new Planet(new Transform(new Vector2(-1, 10)), 2.3f));
         add(new Planet(new Transform(new Vector2(-5, -2)), 1.3f));
-        add(new Planet(new Transform(new Vector2(-3, 0)), 1.3f));
+        add(new Planet(new Transform(new Vector2(-2, 0)), 1.3f));
     }
 
     public void update() {
