@@ -1,10 +1,20 @@
 package fr.tommarx.hpgj2017;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.Vector3;
 
+import fr.tommarx.gameengine.Components.SpriteRenderer;
+import fr.tommarx.gameengine.Components.Text;
 import fr.tommarx.gameengine.Components.Transform;
+import fr.tommarx.gameengine.Easing.Tween;
+import fr.tommarx.gameengine.Easing.TweenListener;
 import fr.tommarx.gameengine.Game.Game;
+import fr.tommarx.gameengine.Game.GameObject;
 import fr.tommarx.gameengine.Game.Screen;
+import fr.tommarx.gameengine.Util.Keys;
 
 public class GameScreen extends Screen {
 
@@ -13,6 +23,7 @@ public class GameScreen extends Screen {
     }
 
     Player player;
+    boolean isUnzoomed = false, zooming = false;
 
     public void show() {
         world.setGravity(new Vector2(0, 0));
@@ -29,11 +40,67 @@ public class GameScreen extends Screen {
         add(new Planet(new Transform(new Vector2(-1, 10)), 2.3f));
         add(new Planet(new Transform(new Vector2(-5, -2)), 1.3f));
         add(new Planet(new Transform(new Vector2(-2, 0)), 1.3f));
+
+        GameObject bg = new GameObject(new Transform(Game.center));
+        bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), -15, -10));
+        bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), -15, 10));
+        bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), 5, 10));
+        bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), 5, -10));
+        bg.setLayout(-1);
+        bg.setScrollingSpeed(0.8f);
+        add(bg);
+
+        GameObject text = new GameObject(new Transform(Game.center));
+        text.addComponent(new SpriteRenderer(text, Gdx.files.internal("pressX.png")));
+        text.setLayout(0);
+        text.setScrollingSpeed(0.1f);
+        add(text);
+
     }
 
     public void update() {
+        handleCamera();
 
+        if (Keys.isKeyJustPressed(Input.Keys.X) && !isUnzoomed && !zooming) {
+            zooming = true;
+            new Tween(Tween.CUBE_EASE_INOUT, 1, 0, false, new TweenListener() {
+                public void onValueChanged(float v) {
+                    Game.getCurrentScreen().camera.zoom = v * 2 + 1;
+                }
 
+                public void onFinished() {
+                    isUnzoomed = true;
+                    zooming = false;
+                }
+            });
+        }
 
+        if (isUnzoomed && !Keys.isKeyPressed(Input.Keys.X) && !zooming) {
+            isUnzoomed = false;
+            zooming = true;
+            new Tween(Tween.CUBE_EASE_INOUT, 1, 0, false, new TweenListener() {
+                public void onValueChanged(float v) {
+                    Game.getCurrentScreen().camera.zoom = (1 - v) * 2 + 1;
+                }
+
+                public void onFinished() {
+                    zooming = false;
+                }
+            });
+        }
+
+        if (Keys.isKeyJustPressed(Input.Keys.D)) {
+           Game.debugging = !Game.debugging;
+        }
+
+        Game.debug(2, "FPS : " + Gdx.graphics.getFramesPerSecond());
+
+    }
+
+    private void handleCamera() {
+        Vector2 posA = new Vector2(Game.getCurrentScreen().camera.position.cpy().x, Game.getCurrentScreen().camera.position.cpy().y);
+        Vector2 posB = new Vector2(player.body.getBody().getPosition());
+        Vector2 vec = posB.sub(posA);
+        Game.getCurrentScreen().camera.position.add(new Vector3(vec.scl(0.1f).x, vec.scl(0.1f).y, 0));
     }
 }

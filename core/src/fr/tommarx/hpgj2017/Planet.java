@@ -1,10 +1,12 @@
 package fr.tommarx.hpgj2017;
 
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 
 import fr.tommarx.gameengine.Components.Body;
 import fr.tommarx.gameengine.Components.CircleBody;
+import fr.tommarx.gameengine.Components.SpriteRenderer;
 import fr.tommarx.gameengine.Components.Transform;
 import fr.tommarx.gameengine.Game.AbstractGameObject;
 import fr.tommarx.gameengine.Game.Game;
@@ -20,6 +22,8 @@ public class Planet extends AbstractGameObject{
         setTag("Planet");
         body = new CircleBody(this, radius, BodyDef.BodyType.KinematicBody, false);
         addComponent(body);
+        addComponent(new SpriteRenderer(this, Gdx.files.internal("planet1.png"), 0, 0, radius * 2, radius * 2));
+        setLayout(1);
         player = ((Player) Game.getCurrentScreen().getGameObjectByTag("Player"));
         this.radius = radius;
 
