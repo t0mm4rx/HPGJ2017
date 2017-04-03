@@ -26,7 +26,6 @@ public class Planet extends AbstractGameObject{
         setLayout(1);
         player = ((Player) Game.getCurrentScreen().getGameObjectByTag("Player"));
         this.radius = radius;
-
     }
 
     protected void update(float delta) {

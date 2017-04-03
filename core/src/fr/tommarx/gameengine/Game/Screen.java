@@ -278,7 +278,7 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
     public abstract void update();
 
     public void resize(int width, int height) {
-        Game.center = new Vector2(width / 2, height / 2);
+        Game.center = new Vector2(width / 2 / 100, height / 2 / 100);
     }
 
     public void pause() {

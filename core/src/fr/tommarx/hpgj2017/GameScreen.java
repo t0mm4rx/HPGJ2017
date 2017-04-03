@@ -27,9 +27,10 @@ public class GameScreen extends Screen {
 
     public void show() {
         world.setGravity(new Vector2(0, 0));
-        Game.debugging = true;
-        //camera.zoom = 3f;
+        //Game.debugging = true;
+        fadeIn(1);
         player = new Player(new Transform(Game.center));
+        Game.debug(3, Game.center);
         add(player);
         add(new Planet(new Transform(new Vector2(2, 5)), 1));
         add(new Planet(new Transform(new Vector2(6, 2)), 0.7f));
@@ -39,7 +40,9 @@ public class GameScreen extends Screen {
         add(new Planet(new Transform(new Vector2(10, 8)), 2.1f));
         add(new Planet(new Transform(new Vector2(-1, 10)), 2.3f));
         add(new Planet(new Transform(new Vector2(-5, -2)), 1.3f));
-        add(new Planet(new Transform(new Vector2(-2, 0)), 1.3f));
+        Planet p = new Planet(new Transform(new Vector2(-2, 0)), 1.3f);
+        add(p);
+        add(new Flag(p));
 
         GameObject bg = new GameObject(new Transform(Game.center));
         bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), -15, -10));
@@ -51,7 +54,8 @@ public class GameScreen extends Screen {
         add(bg);
 
         GameObject text = new GameObject(new Transform(Game.center));
-        text.addComponent(new SpriteRenderer(text, Gdx.files.internal("pressX.png")));
+        //text.addComponent(new SpriteRenderer(text, Gdx.files.internal("pressX.png")));
+        text.addComponent(new Text(text, Gdx.files.internal("font.ttf"), 30, "Hold X to dezoom", Color.WHITE));
         text.setLayout(0);
         text.setScrollingSpeed(0.1f);
         add(text);
@@ -94,7 +98,6 @@ public class GameScreen extends Screen {
         }
 
         Game.debug(2, "FPS : " + Gdx.graphics.getFramesPerSecond());
-
     }
 
     private void handleCamera() {

@@ -33,6 +33,9 @@ public class Player extends AbstractGameObject {
         new CollisionsManager(new CollisionsListener() {
             public void collisionEnter(AbstractGameObject a, AbstractGameObject b, Contact contact) {
                 canJump = true;
+                if ((a.getTag().equals("Player") && b.getTag().equals("Flag")) || (b.getTag().equals("Player") && a.getTag().equals("Flag"))) {
+                    Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game));
+                }
             }
 
             public void collisionEnd(AbstractGameObject a, AbstractGameObject b, Contact contact) {
