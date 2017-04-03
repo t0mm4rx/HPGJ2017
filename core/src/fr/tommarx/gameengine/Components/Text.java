@@ -43,7 +43,7 @@ public class Text extends Component {
     }
 
     public void render() {
-        Game.batch.setProjectionMatrix(Game.getCurrentScreen().textCamera.combined);
+        Game.batch.setProjectionMatrix(Game.getCurrentScreen().camera.combined.cpy().scale(0.01f, 0.01f, 1));
         glyphLayout.setText(font, text);
         font.getData().setScale(getGameObject().getTransform().getScale().x, getGameObject().getTransform().getScale().y);
         font.setColor(color);

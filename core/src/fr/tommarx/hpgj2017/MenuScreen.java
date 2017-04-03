@@ -23,15 +23,11 @@ public class MenuScreen extends Screen{
         world.setGravity(new Vector2());
         add(new Player(new Transform(new Vector2(8, Game.center.y + 2))));
         add(new Planet(new Transform(new Vector2(8, Game.center.y)), 1.5f));
-        play = new GameObject(new Transform(new Vector2(-4, 1)));
+        play = new GameObject(new Transform(new Vector2(1, 4)));
         play.addComponent(new Text(play, Gdx.files.internal("font.ttf"), 40, "Play !", Color.WHITE));
         add(play);
     }
 
-    public void update() {
-        if (Keys.isKeyPressed(Input.Keys.MINUS)) {
-            zoom(0.01f);
-        }
-    }
+    public void update() {}
 
 }
