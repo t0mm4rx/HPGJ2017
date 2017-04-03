@@ -31,6 +31,7 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
     protected ArrayList<Drawable> drawablesHUD;
     public ArrayList<Drawable> toDelete;
     public OrthographicCamera camera;
+    public OrthographicCamera textCamera;
     public Game game;
     private RayHandler rayHandler;
     public ShapeRenderer shapeRenderer;
@@ -48,10 +49,12 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
     public Screen (Game game) {
         this.game = game;
         camera = new OrthographicCamera(Gdx.graphics.getWidth() / 100, Gdx.graphics.getHeight() / 100);
+        textCamera = new OrthographicCamera(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         camera.position.set(Game.center.x, Game.center.y, 0);
-        drawables = new ArrayList<Drawable>();
-        drawablesHUD = new ArrayList<Drawable>();
-        toDelete = new ArrayList<Drawable>();
+        textCamera.position.set(-Gdx.graphics.getWidth() / 2, -Gdx.graphics.getWidth() / 2, 0);
+        drawables = new ArrayList<>();
+        drawablesHUD = new ArrayList<>();
+        toDelete = new ArrayList<>();
         world = new World(new Vector2(0, -9.8f), true);
         colliderRenderer = new Box2DDebugRenderer();
         shapeRenderer = new ShapeRenderer();
@@ -191,7 +194,6 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
         camera.update();
         Game.batch.setProjectionMatrix(camera.combined);
         shapeRenderer.setProjectionMatrix(Game.batch.getProjectionMatrix());
-
 
         if (isShaking) {
             if (shakingElapsed > shakingDuration) {
@@ -353,6 +355,26 @@ public abstract class Screen implements com.badlogic.gdx.Screen {
             shakingLastCam = camera.position.cpy();
         }
         isShaking = true;
+    }
+
+    public void setZoom(float zoom) {
+        textCamera.zoom = zoom;
+        camera.zoom = zoom;
+    }
+
+    public void zoom(float zoom) {
+        textCamera.zoom += zoom;
+        camera.zoom += zoom;
+    }
+
+    public void setPosition(Vector2 pos) {
+        textCamera.position.set(new Vector3(pos.x * 100, pos.y * 100, 0));
+        camera.position.set(new Vector3(pos.x, pos.y, 0));
+    }
+
+    public void translate(Vector2 t) {
+        textCamera.translate(t.x * 100, t.y * 100);
+        camera.translate(t.x, t.y);
     }
 
 
