@@ -10,6 +10,7 @@ import fr.tommarx.gameengine.Components.SpriteRenderer;
 import fr.tommarx.gameengine.Components.Transform;
 import fr.tommarx.gameengine.Game.AbstractGameObject;
 import fr.tommarx.gameengine.Game.Game;
+import fr.tommarx.gameengine.Game.GameObject;
 
 public class Planet extends AbstractGameObject{
 
@@ -23,15 +24,24 @@ public class Planet extends AbstractGameObject{
         body = new CircleBody(this, radius, BodyDef.BodyType.KinematicBody, false);
         addComponent(body);
         addComponent(new SpriteRenderer(this, Gdx.files.internal("planet1.png"), 0, 0, radius * 2, radius * 2));
-        setLayout(1);
+        setLayout(2);
         player = ((Player) Game.getCurrentScreen().getGameObjectByTag("Player"));
         this.radius = radius;
     }
 
     protected void update(float delta) {
-        float dst = body.getBody().getPosition().dst(player.body.getBody().getPosition());
-        if (dst < 5) {
-            player.body.getBody().applyForceToCenter(body.getBody().getPosition().sub(player.body.getBody().getPosition()).nor().scl((5 - dst) / 10 * radius), false);
+        if (player != null) {
+            float dst = body.getBody().getPosition().dst(player.body.getBody().getPosition());
+            if (dst < 5) {
+                player.body.getBody().applyForceToCenter(body.getBody().getPosition().sub(player.body.getBody().getPosition()).nor().scl((5 - dst) / 10 * radius), false);
+            }
+        }
+        for (AbstractGameObject enemy : Game.getCurrentScreen().getGameObjectsByTag("Enemy")) {
+            Enemy e = (Enemy) enemy;
+            float dst = body.getBody().getPosition().dst(e.body.getBody().getPosition());
+            if (dst < 5) {
+                e.body.getBody().applyForceToCenter(body.getBody().getPosition().sub(e.body.getBody().getPosition()).nor().scl((5 - dst) / 10 * radius), false);
+            }
         }
     }
 }

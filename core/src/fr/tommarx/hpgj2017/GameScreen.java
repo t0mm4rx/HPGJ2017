@@ -35,33 +35,29 @@ public class GameScreen extends Screen {
         Game.debug(3, Game.center);
         add(player);
         loadLevel();
-        /*add(new Planet(new Transform(new Vector2(2, 5)), 1));
-        add(new Planet(new Transform(new Vector2(6, 2)), 0.7f));
-        add(new Planet(new Transform(new Vector2(3, 1)), 1.1f));
-        add(new Planet(new Transform(new Vector2(6, 6)), 0.5f));
-        add(new Planet(new Transform(new Vector2(10, 2)), 0.8f));
-        add(new Planet(new Transform(new Vector2(10, 8)), 2.1f));
-        add(new Planet(new Transform(new Vector2(-1, 10)), 2.3f));
-        add(new Planet(new Transform(new Vector2(-5, -2)), 1.3f));
-        Planet p = new Planet(new Transform(new Vector2(-2, 0)), 1.3f);
-        add(p);
-        add(new Flag(p));*/
 
         GameObject bg = new GameObject(new Transform(Game.center));
         bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), -15, -10));
         bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), -15, 10));
         bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), 5, 10));
         bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), 5, -10));
+        bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), 20, 10));
+        bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), 20, -10));
         bg.setLayout(-1);
         bg.setScrollingSpeed(0.8f);
         add(bg);
 
         GameObject text = new GameObject(new Transform(Game.center));
-        //text.addComponent(new SpriteRenderer(text, Gdx.files.internal("pressX.png")));
         text.addComponent(new Text(text, Gdx.files.internal("font.ttf"), 30, "Hold X to dezoom", Color.WHITE));
         text.setLayout(0);
         text.setScrollingSpeed(0.1f);
         add(text);
+
+        GameObject text2 = new GameObject(new Transform(new Vector2(Game.center.x, Game.center.y + 0.5f)));
+        text2.addComponent(new Text(text2, Gdx.files.internal("font.ttf"), 30, "Press R to restart", Color.WHITE));
+        text2.setLayout(0);
+        text2.setScrollingSpeed(0.1f);
+        add(text2);
 
     }
 
@@ -70,13 +66,16 @@ public class GameScreen extends Screen {
         int c = 0;
         for (String line : content.split("\n")) {
             String[] props = line.split(",");
-            Vector2 pos = new Vector2(Float.parseFloat(props[0]), Float.parseFloat(props[0]));
+            Vector2 pos = new Vector2(Float.parseFloat(props[0]), Float.parseFloat(props[1]));
             float radius = Float.parseFloat(props[2]);
             Planet p = new Planet(new Transform(pos), radius);
             add(p);
             c++;
             if (props[3].equals("true")) {
                 add(new Flag(p));
+            }
+            if (props[4].equals("true")) {
+                add(new Enemy(p));
             }
         }
         System.out.println(c);
@@ -97,6 +96,10 @@ public class GameScreen extends Screen {
                     zooming = false;
                 }
             });
+        }
+
+        if (Keys.isKeyJustPressed(Input.Keys.R)) {
+            game.setScreen(new GameScreen(game, "levels/level" + GameClass.lastLevel + ".map"));
         }
 
         if (isUnzoomed && !Keys.isKeyPressed(Input.Keys.X) && !zooming) {

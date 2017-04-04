@@ -32,21 +32,36 @@ public class Player extends AbstractGameObject {
         body.getBody().setLinearVelocity(new Vector2(-0.3f, 0.9f).scl(10));
         new CollisionsManager(new CollisionsListener() {
             public void collisionEnter(AbstractGameObject a, AbstractGameObject b, Contact contact) {
-                canJump = true;
-                if ((a.getTag().equals("Player") && b.getTag().equals("Flag")) || (b.getTag().equals("Player") && a.getTag().equals("Flag"))) {
-                    Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level1.map"));
+                if (a != null && b != null) {
+                    if ((a.getTag().equals("Player") && b.getTag().equals("Planet")) || (b.getTag().equals("Player") && a.getTag().equals("Planet"))) {
+                        canJump = true;
+                    }
+                    if ((a.getTag().equals("Player") && b.getTag().equals("Flag")) || (b.getTag().equals("Player") && a.getTag().equals("Flag"))) {
+                        if (Gdx.files.internal("levels/level" + (GameClass.lastLevel + 1) + ".map").exists()) {
+                            GameClass.lastLevel++;
+                        }
+                        Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level" + GameClass.lastLevel + ".map"));
+                    }
+                    if ((a.getTag().equals("Player") && b.getTag().equals("Enemy")) || (a.getTag().equals("Enemy") && b.getTag().equals("Player"))) {
+                        Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level" + GameClass.lastLevel + ".map"));
+                    }
                 }
             }
 
             public void collisionEnd(AbstractGameObject a, AbstractGameObject b, Contact contact) {
-                canJump = false;
+                if (a != null && b != null) {
+                    if ((a.getTag().equals("Player") && b.getTag().equals("Planet")) || (b.getTag().equals("Player") && a.getTag().equals("Planet"))) {
+                        canJump = false;
+                    }
+                }
             }
         });
     }
 
     protected void update(float delta) {
         body.getBody().setAwake(true);
-        if (Keys.isKeyJustPressed(Input.Keys.SPACE) && canJump) {
+        if (Keys.isKeyPressed(Input.Keys.SPACE) && canJump) {
+            canJump = false;
             body.getBody().applyForceToCenter(new Vector2(body.getBody().getPosition().sub(getClosestPlanet().body.getBody().getPosition())).nor().scl(JUMP), false);
         }
         if (Keys.isKeyPressed(Input.Keys.LEFT)) {

@@ -82,7 +82,7 @@ public class MenuScreen extends Screen{
                 case 0:
                     fadeOut(1);
                     Game.waitAndDo(1, () -> {
-                        game.setScreen(new GameScreen(game, "levels/level1.map"));
+                        game.setScreen(new GameScreen(game, "levels/level" + GameClass.lastLevel + ".map"));
                         return null;
                     });
                     break;
