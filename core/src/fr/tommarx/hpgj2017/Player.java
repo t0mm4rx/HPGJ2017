@@ -40,10 +40,18 @@ public class Player extends AbstractGameObject {
                         if (Gdx.files.internal("levels/level" + (GameClass.lastLevel + 1) + ".map").exists()) {
                             GameClass.lastLevel++;
                         }
-                        Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level" + GameClass.lastLevel + ".map"));
+                        if (((GameScreen)Game.getCurrentScreen()).customLevel) {
+                            Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, ((GameScreen)Game.getCurrentScreen()).level, true));
+                        } else {
+                            Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level" + GameClass.lastLevel + ".map", false));
+                        }
                     }
                     if ((a.getTag().equals("Player") && b.getTag().equals("Enemy")) || (a.getTag().equals("Enemy") && b.getTag().equals("Player"))) {
-                        Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level" + GameClass.lastLevel + ".map"));
+                        if (((GameScreen)Game.getCurrentScreen()).customLevel) {
+                            Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, ((GameScreen)Game.getCurrentScreen()).level, true));
+                        } else {
+                            Game.getCurrentScreen().game.setScreen(new GameScreen(Game.getCurrentScreen().game, "levels/level" + GameClass.lastLevel + ".map", false));
+                        }
                     }
                 }
             }

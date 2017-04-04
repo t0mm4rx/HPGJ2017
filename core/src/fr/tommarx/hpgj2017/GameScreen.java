@@ -18,14 +18,15 @@ import fr.tommarx.gameengine.Util.Keys;
 
 public class GameScreen extends Screen {
 
-    public GameScreen(Game game, String level) {
+    public GameScreen(Game game, String level, boolean customLevel) {
         super(game);
         this.level = level;
+        this.customLevel = customLevel;
     }
 
     Player player;
     String level;
-    boolean isUnzoomed = false, zooming = false;
+    boolean isUnzoomed = false, zooming = false, customLevel;
 
     public void show() {
         world.setGravity(new Vector2(0, 0));
@@ -63,14 +64,12 @@ public class GameScreen extends Screen {
 
     public void loadLevel() {
         String content = Gdx.files.internal(level).readString();
-        int c = 0;
         for (String line : content.split("\n")) {
             String[] props = line.split(",");
             Vector2 pos = new Vector2(Float.parseFloat(props[0]), Float.parseFloat(props[1]));
             float radius = Float.parseFloat(props[2]);
             Planet p = new Planet(new Transform(pos), radius);
             add(p);
-            c++;
             if (props[3].equals("true")) {
                 add(new Flag(p));
             }
@@ -78,7 +77,6 @@ public class GameScreen extends Screen {
                 add(new Enemy(p));
             }
         }
-        System.out.println(c);
     }
 
     public void update() {
@@ -99,7 +97,14 @@ public class GameScreen extends Screen {
         }
 
         if (Keys.isKeyJustPressed(Input.Keys.R)) {
-            game.setScreen(new GameScreen(game, "levels/level" + GameClass.lastLevel + ".map"));
+            if (customLevel) {
+                game.setScreen(new GameScreen(game, level, true));
+            } else {
+                game.setScreen(new GameScreen(game, "levels/level" + GameClass.lastLevel + ".map", false));
+            }
+        }
+        if (Keys.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            setScreen(new MenuScreen(game));
         }
 
         if (isUnzoomed && !Keys.isKeyPressed(Input.Keys.X) && !zooming) {
