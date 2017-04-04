@@ -7,7 +7,7 @@ public class GameClass extends Game {
 	public static int lastLevel = 1;
 
 	public void init() {
-		setScreen(new GameScreen(this, "levels/level3.map"));
+		setScreen(new MenuScreen(this));
 	}
 
 }

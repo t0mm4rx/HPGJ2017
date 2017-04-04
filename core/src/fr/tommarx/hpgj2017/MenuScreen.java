@@ -30,7 +30,7 @@ public class MenuScreen extends Screen{
         play.addComponent(new Text(play, Gdx.files.internal("font.ttf"), 40, "Play !", Color.WHITE));
         add(play);
         map = new GameObject(new Transform(new Vector2(1, 3.1f)));
-        map.addComponent(new Text(map, Gdx.files.internal("font.ttf"), 40, "Map editor", Color.WHITE));
+        map.addComponent(new Text(map, Gdx.files.internal("font.ttf"), 40, "Open custom map", Color.WHITE));
         add(map);
         quit = new GameObject(new Transform(new Vector2(1, 2.1f)));
         quit.addComponent(new Text(quit, Gdx.files.internal("font.ttf"), 40, "Quit", Color.WHITE));
@@ -87,6 +87,11 @@ public class MenuScreen extends Screen{
                     });
                     break;
                 case 1:
+                    fadeOut(1);
+                    Game.waitAndDo(1, () -> {
+                        game.setScreen(new ChooseMap(game));
+                        return null;
+                    });
                     break;
                 case 2:
                     System.exit(0);
