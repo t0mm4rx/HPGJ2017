@@ -18,11 +18,13 @@ import fr.tommarx.gameengine.Util.Keys;
 
 public class GameScreen extends Screen {
 
-    public GameScreen(Game game) {
+    public GameScreen(Game game, String level) {
         super(game);
+        this.level = level;
     }
 
     Player player;
+    String level;
     boolean isUnzoomed = false, zooming = false;
 
     public void show() {
@@ -32,7 +34,8 @@ public class GameScreen extends Screen {
         player = new Player(new Transform(Game.center));
         Game.debug(3, Game.center);
         add(player);
-        add(new Planet(new Transform(new Vector2(2, 5)), 1));
+        loadLevel();
+        /*add(new Planet(new Transform(new Vector2(2, 5)), 1));
         add(new Planet(new Transform(new Vector2(6, 2)), 0.7f));
         add(new Planet(new Transform(new Vector2(3, 1)), 1.1f));
         add(new Planet(new Transform(new Vector2(6, 6)), 0.5f));
@@ -42,7 +45,7 @@ public class GameScreen extends Screen {
         add(new Planet(new Transform(new Vector2(-5, -2)), 1.3f));
         Planet p = new Planet(new Transform(new Vector2(-2, 0)), 1.3f);
         add(p);
-        add(new Flag(p));
+        add(new Flag(p));*/
 
         GameObject bg = new GameObject(new Transform(Game.center));
         bg.addComponent(new SpriteRenderer(bg, Gdx.files.internal("background.png"), -15, -10));
@@ -60,6 +63,23 @@ public class GameScreen extends Screen {
         text.setScrollingSpeed(0.1f);
         add(text);
 
+    }
+
+    public void loadLevel() {
+        String content = Gdx.files.internal(level).readString();
+        int c = 0;
+        for (String line : content.split("\n")) {
+            String[] props = line.split(",");
+            Vector2 pos = new Vector2(Float.parseFloat(props[0]), Float.parseFloat(props[0]));
+            float radius = Float.parseFloat(props[2]);
+            Planet p = new Planet(new Transform(pos), radius);
+            add(p);
+            c++;
+            if (props[3].equals("true")) {
+                add(new Flag(p));
+            }
+        }
+        System.out.println(c);
     }
 
     public void update() {
